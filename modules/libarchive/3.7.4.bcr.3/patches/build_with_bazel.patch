@@ -1,0 +1,33 @@
+diff --git a/tar/bsdtar.c b/tar/bsdtar.c
+index 42baab28..95d53097 100644
+--- a/tar/bsdtar.c
++++ b/tar/bsdtar.c
+@@ -1070,7 +1070,11 @@ static const char *long_help_msg =
+ 	"  -c Create  -r Add/Replace  -t List  -u Update  -x Extract\n"
+ 	"Common Options:\n"
+ 	"  -b #  Use # 512-byte records per I/O block\n"
++#ifdef _PATH_DEFTAPE 
+ 	"  -f <filename>  Location of archive (default " _PATH_DEFTAPE ")\n"
++#else
++	"  -f <filename>  Location of archive \n"
++#endif
+ 	"  -v    Verbose\n"
+ 	"  -w    Interactive\n"
+ 	"Create: %p -c [options] [<file> | <dir> | @<archive> | -C <dir> ]\n"
+diff --git a/test_utils/test_common.h b/test_utils/test_common.h
+index 8e1ec824..cc452c8b 100644
+--- a/test_utils/test_common.h
++++ b/test_utils/test_common.h
+@@ -30,7 +30,11 @@
+  * The goal of this file (and the matching test.c) is to
+  * simplify the very repetitive test-*.c test programs.
+  */
+-#if defined(HAVE_CONFIG_H)
++
++#if defined(PLATFORM_CONFIG_H)
++/* Use hand-built config.h in environments that need it. */
++#include PLATFORM_CONFIG_H
++#elif defined(HAVE_CONFIG_H)
+ /* Most POSIX platforms use the 'configure' script to build config.h */
+ #include "config.h"
+ #elif defined(__FreeBSD__)
